@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<a  class="btn btn-success" href="{% url 'addpost'%}">Add Manual Book <i class="fa fa-plus" aria-hidden="true"></i></a>
+<a  class="btn btn-warning" href="{% url 'projectlist' %}">Project <i class="fa fa-bar-chart" aria-hidden="true"></i>
+</a>
+<a  class="btn btn-primary" href="/admin">User Role <i class="fas fa-user-cog"></i></a>
+<hr>
+    {% for data in post %}
+        <div class="card">
+        <div class="card-header">
+            {{ data.Category.categoryname }} - {{ data.date_added }} 
+            {% if data.file %}
+            <button class="btn btn-outline-info">
+            <a href="media/{{ data.file }}" download="media/{{ data.file }}" style="text-decoration:None" class="footer_link">{{ data.file }}<i class="fa fa-download"></i></a>
+            </button> 
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+            {{ data.title }}
+            <footer>
+            <a  class="btn btn-warning" href="{% url 'datailbook' data.id %}">View <i class="fa fa-eye" aria-hidden="true"></i></a> 
+            <a class="btn btn-danger" href="{% url 'deletepost' data.id %}">Delete <i class="fa fa-trash" aria-hidden="true"></i></a>
+            <a class="btn btn-danger" href="{% url 'editpost' data.id %}">Edit <i class="fas fa-edit"></i></a>
+            </footer>
+            </blockquote>
+        </div>
+        </div>
+        <hr>
+    {% endfor %}
+    {% if post.has_other_pages %}
+        <ul class="pagination">
+           {% if post.has_previous %}
+                <li><a href="?page={{ post.previous_page_number }}">«</a></li>
+           {% else %}
+                <li class="disabled"><span>«</span></li>
+           {% endif %}
+                {% for i in post.paginator.page_range %}
+                   {% if post.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                   {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if post.has_next %}
+                    <li><a href="?page={{ post.next_page_number }}">»</a></li>
+                {% else %}
+                    <li class="disabled"><span>»</span></li>
+                {% endif %}
+        </ul>
+    {% endif %}
+{% endblock %}

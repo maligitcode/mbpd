@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if data%}
+        <form action="{% url category %}" method="GET">
+        Search <input type="text" name="q" value="{{data.GET.q}}" placeholder="Search posts"/>
+        <input type="submit" name="submit" value="Search"/>
+        </form>
+        <hr>
+    {% endif %}    
+    <a  class="btn btn-success" href="{% url 'addproject'%}">Add Project <i class="fa fa-plus" aria-hidden="true"></i></a>
+     <a class="btn btn-primary" href="{% url 'projectdocumentadd'%}">Upload Document <i class="fa fa-upload" aria-hidden="true"></i></a>
+    <hr>
+    <h3>List Project</h3>
+    <hr>
+    {% for data in data %}
+        <div class="card">
+        <div class="card-header">
+            {{ data.Category.categoryname }} - {{ data.date_updated }}
+            <p style="color:blue;">(Progress : {{ data.progress }}%)</p>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+            {{ data.title }}
+            <footer class="blockquote-footer">
+            <a href="{% url 'editproject' data.id %}">Edit</a>
+            <a style="color:red;" href="{% url 'deleteproject' data.id %}">Delete</a>
+            <a style="color:green" href="{% url 'projectdocumentlist' data.id %}">Document</a>
+            </footer>
+            </blockquote>
+        </div>
+        </div>
+        <br>
+    {% endfor %}
+{% endblock %}
