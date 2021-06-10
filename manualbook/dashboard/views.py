@@ -37,9 +37,8 @@ def logoutUser(request):
 # USER FRONTEND
 @login_required(login_url='login')
 def home(request):
-    if request.user.groups.filter(name__in=['ecommerce']).exists():
-       group = "ecommerce"
-       categoryid='1'
+    if request.user.groups.filter(name__in=['admin']).exists():
+       group = "admin" 
     elif request.user.groups.filter(name__in=['finance']).exists():
         group = "finance"
         categoryid='2'
@@ -52,9 +51,12 @@ def home(request):
     elif request.user.groups.filter(name__in=['it']).exists():
         group = "it"
         categoryid='5' 
-    else:
+    elif request.user.groups.filter(name__in=['operations']).exists():
         group = "operations"
         categoryid='6'      
+    else:
+        group = "ecommerce"
+        categoryid='1'  
    
     if request.method == 'GET':
         query= request.GET.get('q')
@@ -62,7 +64,10 @@ def home(request):
         submitbutton= request.GET.get('submit')
 
         if submitbutton is not None:
-            lookups= Q(title__icontains=query)&Q(Category=categoryid)
+            if group=='admin':
+                lookups= Q(title__icontains=query)
+            else:
+                lookups= Q(title__icontains=query)&Q(Category=categoryid)
 
             results= Project.objects.filter(lookups).distinct()
             context ={
@@ -74,7 +79,10 @@ def home(request):
             return render(request,'projecthome.html',context)
 
         else:
-            data= Project.objects.filter(Category=categoryid).order_by('-date_updated')
+            if group=='admin':
+                data= Project.objects.all().order_by('-date_updated')
+            else:
+                data= Project.objects.filter(Category=categoryid).order_by('-date_updated')
             # data = Project.objects.all().order_by('-date_updated')
             page = request.GET.get('page', 1)
 
@@ -347,11 +355,8 @@ def addpost(request):
         # uploaded_file_url = fs.url(filename)
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
                 form.save()
-                return redirect('/backend')
-            except:
-                pass    
+                return redirect('/backend')  
     else:
         form = PostForm()
         context = {

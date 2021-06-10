@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
             {% for category in menu %}
-            <a class="nav-item nav-link" href="{% url category.link %}">{{ category.categoryname }}</a>
+            <a class="nav-item nav-link" style="color:white;" href="{% url category.link %}">{{ category.categoryname }}</a>
               {% comment %} <a class="nav-item nav-link" href="{% url 'ecommerce' %}">{{ category.categoryname }}</a> {% endcomment %}
             {% endfor %}
             </div>
